@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_delivery_app/screens/home/home_screen.dart';
+import 'package:flutter_food_delivery_app/screens/login/login_screen.dart';
+//import 'package:dropdown_formfield/dropdown_formfield.dart';
 
-import '../../reusable_widgets/reusable_widgets.dart';
-import '../../utils/color_utils.dart';
+import 'package:flutter_food_delivery_app/widgets/reusable_widgets.dart';
+import 'package:flutter_food_delivery_app/screens/color_utils.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -16,7 +19,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
 
+  final items =  ['Restaurant','NGO'];
+  String? value;
+  String? holder = '' ;
   @override
+  DropdownMenuItem<String> buildMenuItem(String item)=>
+      DropdownMenuItem(
+        value:item,
+        child:Text(
+          item,
+        ),
+      );
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -33,10 +46,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-          hexStringToColor("CB2B93"),
-          hexStringToColor("9546C4"),
-          hexStringToColor("5E61F4")
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+              hexStringToColor("ffffff"),
+              hexStringToColor("ebba86"),
+              hexStringToColor("d70909")
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
@@ -61,9 +74,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
+
+                DropdownButton<String>(
+                  value:value,
+                  items:items.map(buildMenuItem).toList(),
+                  onChanged: (value)=>setState(()=>this.value=value),
+
+
+                ),
+
+                const SizedBox(
+                  height: 20,
+                ),
+
+
+
+
                 logInSignUpButton(context, false, () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                  setState(() {
+                    holder = value ;
+                    print("$holder");
+                  });
+                  FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailTextController.text,
+                      password: _passwordTextController.text).then((value) {
+                        print("created new account");
+                        if(holder=='Restaurant') {
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()));
+                        }
+                        else{
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) => LogInScreen()));
+                        }
+                  }).onError((error, stackTrace)
+                      {
+                        print("ERROR ${error.toString()}");
+                      });
+
                 }),
               ],
             ),
@@ -71,5 +120,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+
   }
 }
