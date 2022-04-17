@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_delivery_app/screens/home/home_screen.dart';
@@ -15,18 +16,21 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController _confirmpasswordTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
 
-  final items =  ['Restaurant','NGO'];
+  final items = ['Restaurant', 'NGO'];
   String? value;
-  String? holder = '' ;
+  String? holder = '';
+
+  final _firestore = FirebaseFirestore.instance;
+
   @override
-  DropdownMenuItem<String> buildMenuItem(String item)=>
-      DropdownMenuItem(
-        value:item,
-        child:Text(
+  DropdownMenuItem<String> buildMenuItem(String item) => DropdownMenuItem(
+        value: item,
+        child: Text(
           item,
         ),
       );
@@ -34,11 +38,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
           "Sign Up",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
       ),
       body: Container(
@@ -46,10 +57,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              hexStringToColor("ffffff"),
-              hexStringToColor("ebba86"),
-              hexStringToColor("d70909")
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          hexStringToColor("ffffff"),
+          hexStringToColor("ebba86"),
+          hexStringToColor("d70909")
+        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
@@ -59,60 +70,69 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Username", Icons.person_outline, false,
+                reusableTextField("Username", Icons.person_outline, false,
                     _userNameTextController),
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Email", Icons.person_outline, false,
-                    _emailTextController),
+                reusableTextField(
+                    "Email", Icons.mail_outline, false, _emailTextController),
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Password", Icons.person_outline, false,
+                reusableTextField("Password", Icons.lock_outline, true,
                     _passwordTextController),
                 const SizedBox(
                   height: 20,
                 ),
-
-                DropdownButton<String>(
-                  value:value,
-                  items:items.map(buildMenuItem).toList(),
-                  onChanged: (value)=>setState(()=>this.value=value),
-
-
-                ),
-
+                reusableTextField("Confirm Password", Icons.lock_outline, true,
+                    _confirmpasswordTextController),
                 const SizedBox(
                   height: 20,
                 ),
+                DropdownButtonFormField<String>(
+                  value: value,
+                    decoration: InputDecoration(prefixIcon: Icon(Icons.category_outlined,  color: Colors.white70,),
+                        labelText: 'Category',
+                        labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        filled: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        fillColor: Colors.black.withOpacity(0.3),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0), borderSide: const BorderSide(width: 0, style: BorderStyle.none))
 
-
-
-
+                    ),
+                  items: items.map(buildMenuItem).toList(),
+                  onChanged: (value) => setState(() => this.value = value),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 logInSignUpButton(context, false, () {
                   setState(() {
-                    holder = value ;
+                    holder = value;
                     print("$holder");
                   });
                   FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailTextController.text,
-                      password: _passwordTextController.text).then((value) {
-                        print("created new account");
-                        if(holder=='Restaurant') {
-                          Navigator.push(context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeScreen()));
-                        }
-                        else{
-                          Navigator.push(context,
-                              MaterialPageRoute(
-                                  builder: (context) => LogInScreen()));
-                        }
-                  }).onError((error, stackTrace)
-                      {
-                        print("ERROR ${error.toString()}");
-                      });
+                      password: _passwordTextController.text).then((value) async {
+                    print("created new account");
+                    await FirebaseFirestore.instance.collection('users').doc(value.user!.uid)
+                        .set({
+                      "username":_userNameTextController.text,
+                      "email":_emailTextController.text,
+                      "type":holder,
+                    });
 
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) => LogInScreen()));
+                      showAlertDialog(context, "Your account has been created.\n"
+                          "Please LogIn");
+
+
+                  }).onError((error, stackTrace)
+                  {
+                    print("ERROR ${error.toString()}");
+                  });
                 }),
               ],
             ),
@@ -120,6 +140,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
-
   }
 }

@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_food_delivery_app/screens/login/signup_screen.dart';
-import 'package:flutter_food_delivery_app/utils/color_utils.dart';
+import 'package:flutter_food_delivery_app/screens/restaurant_list1.dart';
+import 'package:flutter_food_delivery_app/screens/signup/signup_screen.dart';
+import 'package:flutter_food_delivery_app/screens/color_utils.dart';
 
-import '../../reusable_widgets/reusable_widgets.dart';
+import 'package:flutter_food_delivery_app/widgets/reusable_widgets.dart';
 import '../home/home_screen.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -25,6 +28,9 @@ class _LogInScreenState extends State<LogInScreen> {
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
 
+  final firestoreInstance=FirebaseFirestore.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +39,9 @@ class _LogInScreenState extends State<LogInScreen> {
         height: MediaQuery.of(context).size.height,
         decoration: (BoxDecoration(
           gradient: LinearGradient(colors: [
-            hexStringToColor("CB2B93"),
-            hexStringToColor("9546C4"),
-            hexStringToColor("5E61F4")
+            hexStringToColor("ffffff"),
+            hexStringToColor("ebba86"),
+            hexStringToColor("d70909"),
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
         )),
         child: SingleChildScrollView(
@@ -44,23 +50,51 @@ class _LogInScreenState extends State<LogInScreen> {
                 20, MediaQuery.of(context).size.height * 0.2, 20, 0),
             child: Column(
               children: <Widget>[
-                logoWidget("assets/pizza.png"),
+                logoWidget("assets/logo1.png"),
                 SizedBox(
                   height: 30,
                 ),
-                reusableTextField("Enter Username", Icons.person_outline, false,
+                reusableTextField("Email", Icons.person_outline, false,
                     _emailTextController),
                 SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Password", Icons.lock_outline, true,
+                reusableTextField("Password", Icons.lock_outline, true,
                     _passwordTextController),
                 SizedBox(
                   height: 20,
                 ),
                 logInSignUpButton(context, true, () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                  FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: _emailTextController.text,
+                      password: _passwordTextController.text).then((value){
+                    //FirebaseFirestore.instance.collection('users').where('email',isEqualTo: _emailTextController.text).get().then((DocumentSnapshot documentSnapsot){
+                    // print(result);
+                    // });
+                    firestoreInstance.collection('users')
+                        .doc(value.user!.uid)
+                        .get()
+                        .then((result){
+                      var usertype=(result.data()!["type"]);
+
+                      print(usertype);
+                      if(usertype=='Restaurant')
+                      {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => HomeScreen()));
+                      }
+                      else
+                      {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => ResumeList()));
+                      }
+
+                    });
+
+                  }).onError((error, stackTrace){
+                    print("error ${error.toString()}");
+                  });
+
                 }),
                 signUpOption(),
               ],
@@ -76,7 +110,7 @@ class _LogInScreenState extends State<LogInScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text("Don't have an account?",
-            style: TextStyle(color: Colors.white70)),
+            style: TextStyle(color: Colors.white70, fontSize: 15)),
         GestureDetector(
           onTap: () {
             Navigator.push(context,
@@ -84,7 +118,7 @@ class _LogInScreenState extends State<LogInScreen> {
           },
           child: const Text(
             "  Sign Up",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
           ),
         )
       ],

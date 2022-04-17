@@ -1,10 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_delivery_app/models/models.dart';
 import 'package:flutter_food_delivery_app/models/promo_model.dart';
+import 'package:flutter_food_delivery_app/screens/account_info.dart';
+import 'package:flutter_food_delivery_app/screens/restaurant_list1.dart';
+import 'package:flutter_food_delivery_app/screens/restaurant_page.dart';
+import 'package:flutter_food_delivery_app/screens/restaurantdetailsform.dart';
 import 'package:flutter_food_delivery_app/widgets/widgets.dart';
+import 'package:flutter_food_delivery_app/screens/restauranttile.dart';
+import 'package:flutter_food_delivery_app/widgets/restaurant_card.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
+
+
 
   static Route route() {
     return MaterialPageRoute(
@@ -23,10 +32,14 @@ class HomeScreen extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
+
               child: SizedBox(
-                height: 100.0,
+                height: 50.0,
+
+
                 child: ListView.builder(
                   shrinkWrap: true,
+
                   scrollDirection: Axis.horizontal,
                   itemCount: Category.categories.length,
                   itemBuilder: (context, index) {
@@ -49,7 +62,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            FoodSearchBox(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Align(
@@ -63,12 +75,15 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: Restaurant.restaurants.length,
                 itemBuilder: (context, index) {
                   return RestaurantCard(
                     restaurant: Restaurant.restaurants[index],
                   );
+                  //ResumeList();
+
                 },
               ),
             ),
@@ -79,7 +94,8 @@ class HomeScreen extends StatelessWidget {
           child: Icon(Icons.add),
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
-          onPressed: () => {},
+          onPressed: () => {Navigator.push(context,
+          MaterialPageRoute(builder: (context) => RestaurantDetailsFormScreen())),}
         )
     );
   }
@@ -93,11 +109,12 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.black,
       leading: IconButton(
         icon: Icon(Icons.person, color: Colors.white),
-        onPressed: () {},
+        onPressed: () => {Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AccountInfo())),},
       ),
+      backgroundColor: Colors.black,
       centerTitle: false,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +126,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                 ),
           ),
           Text(
-            'Singapore, 1 Shelton Way',
+            'Navi Mumbai,India',
             style: Theme.of(context).textTheme.headline6!.copyWith(
                   color: Colors.white,
                 ),
