@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "438203991874",
+    "project_id": "food-donation-app-ad137",
+    "storage_bucket": "food-donation-app-ad137.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:438203991874:android:ecfc0cf0cdf8f5bd28eadb",
+        "android_client_info": {
+          "package_name": "com.example.flutter_food_delivery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "438203991874-203c5errof2b00hvt2bhe419qq8oduco.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_food_delivery_app",
+            "certificate_hash": "307a90fdffe7a52d630e1a6f27f81ca360fdbe5e"
+          }
+        },
+        {
+          "client_id": "438203991874-4na5k7r98va0l851c2g9vhk9u4dvj0m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4PI9JvNqfr43BAmqEX66nb8icMwnF1Wg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "438203991874-4na5k7r98va0l851c2g9vhk9u4dvj0m9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
