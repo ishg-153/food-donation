@@ -1,6 +1,8 @@
-# flutter_food_delivery_app
+# food donation app
 
-A new Flutter project.
+This is a feature first Flutter project with an intent to reduce hunger.
+
+** UX to be developed
 
 ## Getting Started
 
