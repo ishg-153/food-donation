@@ -1,8 +1,19 @@
 # food donation app
 
-This is a feature first Flutter project with an intent to reduce hunger.
+This is a feature-first Flutter project with the intent to reduce hunger.
 
-** UX to be developed
+## Idea
+
+United Nations Sustainable Development Goal: Zero Hunger
+
+## Result
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<img src="https://github.com/ishg-153/food-donation/assets/68017646/e261cffc-9ca1-4f5f-84f3-16f5d345065c" width="20%" />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<img src="https://github.com/ishg-153/food-donation/assets/68017646/67062c4e-e68c-49c8-a20e-7acd0ee01d00" width="20%" />
+
+
 
 ## Getting Started
 
